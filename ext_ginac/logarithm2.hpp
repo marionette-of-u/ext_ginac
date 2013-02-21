@@ -65,12 +65,6 @@ namespace GiNaC{
     using logarithm2 = structure<ExtGiNaC::detail::logarithm2_template<>>;
 
     template<>
-    ex logarithm2::evalf(int level) const{
-        const ExtGiNaC::detail::logarithm2_template<> &obj = get_struct();
-        return (log(obj.y).evalf(level) / log(obj.x).evalf(level)).evalf(level);
-    }
-
-    template<>
     ex logarithm2::series(const relational &r, int order, unsigned int options) const{
         const ExtGiNaC::detail::logarithm2_template<> &obj = get_struct();
         return (log(obj.y) / log(obj.x)).series(r, order, options);
@@ -100,7 +94,7 @@ namespace GiNaC{
     template<>
     ex logarithm2::subs(const exmap &m, unsigned int options) const{
         const ExtGiNaC::detail::logarithm2_template<> &obj = get_struct();
-        return (log(obj.y).subs(m, options) / log(obj.x).subs(m, options)).subs(m, options);
+        return logarithm2(ExtGiNaC::detail::logarithm2_template<>(obj.x.subs(m, options), obj.y.subs(m, options)));
     }
 
     template<>
@@ -116,9 +110,9 @@ namespace GiNaC{
         }
         const ExtGiNaC::detail::logarithm2_template<> &obj = get_struct();
         const unsigned int prec = precedence();
-        if(prec >= level){ c.s << "("; }
+        if(level >= prec){ c.s << "("; }
         c.s << "log(" << obj.x << ", " << obj.y << ")";
-        if(prec >= level){ c.s << ")"; }
+        if(level >= prec){ c.s << ")"; }
     }
 }
 
@@ -134,4 +128,3 @@ namespace ExtGiNaC{
 }
 
 #endif
-

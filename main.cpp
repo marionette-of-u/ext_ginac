@@ -1,6 +1,7 @@
 #include <typeinfo>
 #include <cxxabi.h>
 #include <cstdlib>
+
 class demangle{
 private:
     char *realname;
@@ -31,9 +32,13 @@ int main(){
 
     // logarithm2 test
     {
+        std::cout << "-------- logarithm2" << std::endl;
+
         symbol x("x"), y("y");
         symbol a("a"), b("b");
+
         ex e = log2(x, y);
+
         std::cout << latex;
         std::cout << e << std::endl;
         std::cout << e.subs(lst(x == 2, y == 1024)).eval() << std::endl;
@@ -46,18 +51,30 @@ int main(){
         std::cout << e.diff(x) << std::endl;
     }
 
-    // alternate_form test
+    // reduce test
     {
+        std::cout << "-------- reduce" << std::endl;
+
         symbol x("x"), y("y"), z("z");
-        auto f = [&z](const ex &expression){
-            return pow(z, expression);
-        };
-
         symbol a("a"), b("b"), c("c");
-        ex p = exp(pow(a, b)) / exp(pow(a, c));
-        ex q = pow(p * exp(pow(a, c)), p * exp(pow(b, c)));
 
-        std::cout << q << " = " << reduce(q) << std::endl;
+        {
+            ex p[] = {
+                pow(a, log2(a, x)),
+                log2(a, x) + log2(a, y),
+                log2(a, x) - log2(a, y),
+                log2(a, pow(x, b)),
+                log2(a, 1 / x),
+                log2(a, x) * log2(b, a),
+                log2(b, x) / log2(b, a),
+                1 / log2(x, a),
+                log2(1 / a, x)
+            };
+            for(int i = 0, i_ = sizeof(p) / sizeof(*p); i < i_; ++i){
+                std::cout << p[i] << " = " << reduce(p[i]) << std::endl;
+            }
+        }
+
         std::cout << (pow(exp(Pi), I) + 1) << " = " << reduce(pow(exp(Pi), I) + 1) << std::endl;
     }
 
