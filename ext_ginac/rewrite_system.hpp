@@ -21,6 +21,7 @@ namespace ExtGiNaC{
                     pow(wild(0), wild(1)) / pow(wild(0), wild(2)),
                     pow(wild(0), wild(1) - wild(2))
                 },
+                /*
                 {
                     pow(wild(0), log2(wild(0), wild(1))),
                     wild(1)
@@ -37,6 +38,7 @@ namespace ExtGiNaC{
                     log2(wild(0), wild(1)) * log2(wild(2), wild(0)),
                     log2(wild(2), wild(1))
                 }
+                */
             };
             ex current = expression;
             for(; ; ){
