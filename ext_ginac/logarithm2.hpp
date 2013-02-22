@@ -2,6 +2,7 @@
 #define EXT_GINAC_LOGARITHM2_HPP
 
 #include <ginac/ginac.h>
+#include "ext_ginac.hpp"
 
 namespace ExtGiNaC{
     using namespace GiNaC;
@@ -83,9 +84,14 @@ namespace ExtGiNaC{
                 const ex
                     &e_x = level == 1 ? x : x.eval(level - 1),
                     &e_y = level == 1 ? y : y.eval(level - 1);
+                // log(0, y) -> 0
                 // log(x, 1) -> 0
-                if(e_y.is_zero()){
+                if(e_x.is_zero() || e_y == 1){
                     return 0;
+                }
+                // log(x, 0) -> -infinity
+                if(e_y == 0){
+                    throw(pole_error("logarithm2::eval(): log(0) = -infinity", 0));
                 }
                 // log(x, pow(y, p)) -> p * log(x, y)
                 if(is_a<power>(e_y)){
@@ -116,7 +122,27 @@ namespace ExtGiNaC{
             }
 
             ex subs(const exmap &m, unsigned options = 0) const{
-                return logarithm2(x.subs(m, options), y.subs(m, options)).hold();
+                // return logarithm2(x.subs(m, options), y.subs(m, options)).hold();
+                const ex &e_x = x.subs(m, options);
+                const ex &e_y = y.subs(m, options);
+                if(!are_ex_trivially_equal(x, e_x) || !are_ex_trivially_equal(y, e_y)){
+                    return logarithm2(e_x, e_y).subs_one_level(m, options);
+                }
+                if((options & subs_options::algebraic) == 0){
+                    return subs_one_level(m, options);
+                }
+                for(const auto &item : m){
+                    int nummatches = (std::numeric_limits<int>::max)();
+                    exmap repls;
+                    if(tryfactsubs(*this, item.first, nummatches, repls)){
+                        ex
+                            anum = item.second.subs(repls, subs_options::no_pattern),
+                            aden = item.first.subs(repls, subs_options::no_pattern),
+                            result = *this * logarithm2(anum / aden, nummatches);
+                        return ex_to<basic>(result).subs_one_level(m, options);
+                    }
+                }
+                return subs_one_level(m, options);
             }
 
             bool has(const ex &other, unsigned options = 0) const{

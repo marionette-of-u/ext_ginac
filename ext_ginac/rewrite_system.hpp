@@ -21,28 +21,38 @@ namespace ExtGiNaC{
                     pow(wild(0), wild(1)) / pow(wild(0), wild(2)),
                     pow(wild(0), wild(1) - wild(2))
                 },
-                /*
                 {
                     pow(wild(0), log2(wild(0), wild(1))),
                     wild(1)
+                },
+                {
+                    pow(wild(0), log2(wild(0), wild(1))),
+                    wild(1)
+                },
+                {
+                    log2(wild(0), wild(1)) * log2(wild(2), wild(0)),
+                    log2(wild(2), wild(1))
+                },
+                {
+                    log2(wild(0), wild(1)) / log2(wild(0), wild(2)),
+                    log2(wild(2), wild(1))
+                },
+                {
+                    1 / log2(wild(0), wild(1)),
+                    log2(wild(1), wild(0))
                 },
                 {
                     log2(wild(0), wild(1)) + log2(wild(0), wild(2)),
                     log2(wild(0), wild(1) * wild(2))
                 },
                 {
-                    log2(wild(0), pow(wild(1), wild(2))),
-                    wild(2) * log2(wild(0), wild(1))
-                },
-                {
-                    log2(wild(0), wild(1)) * log2(wild(2), wild(0)),
-                    log2(wild(2), wild(1))
+                    log2(wild(0), wild(1)) - log2(wild(0), wild(2)),
+                    log2(wild(0), wild(1) / wild(2))
                 }
-                */
             };
             ex current = expression;
             for(; ; ){
-                const ex temp = current.subs(equations, subs_options::algebraic);
+                ex temp = current.subs(equations, subs_options::algebraic);
                 if(temp == current){ break; }
                 current = temp;
             }
@@ -52,13 +62,14 @@ namespace ExtGiNaC{
 
     inline ex reduce(const ex &expression){
         static const symbol e;
-        return detail::exp_log_reduce(
-            expression.subs(
-                lst(exp(wild(0)) == pow(e, wild(0)), log(wild(0)) == log2(e, wild(0)))
-            )
-        ).subs(
-            lst(pow(e, wild(0)) == exp(wild(0)), log2(e, wild(0)) == log(wild(0)))
-        );
+        return
+            detail::exp_log_reduce(
+                expression.subs(
+                    exp(wild(0)) == pow(e, wild(0))
+                )
+            ).subs(
+                pow(e, wild(0)) == exp(wild(0))
+            );
     }
 }
 

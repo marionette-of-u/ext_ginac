@@ -30,6 +30,8 @@ public:
 int main(){
     using namespace ExtGiNaC;
 
+    std::cout << latex;
+
     // logarithm2 test
     {
         std::cout << "-------- logarithm2" << std::endl;
@@ -39,7 +41,6 @@ int main(){
 
         ex e = log2(x, y);
 
-        //std::cout << latex;
         std::cout << e << std::endl;
         std::cout << e.subs(lst(x == 2, y == 1024)).eval() << std::endl;
         std::cout << e.subs(lst(x == 2, y == 1024)).evalf() << std::endl;
@@ -60,27 +61,20 @@ int main(){
 
         {
             ex p[] = {
-                //pass
                 pow(a, log2(a, x)),
-                // !!
                 log2(a, x) + log2(a, y),
-                // !!
                 log2(a, x) - log2(a, y),
-                // pass
                 log2(a, pow(x, b)),
-                // pass
                 log2(a, 1 / x),
-                // !!
                 log2(a, x) * log2(b, a),
-                // !!
+                log2(b, a) * log2(a, x),
                 log2(b, x) / log2(b, a),
-                // !!
                 1 / log2(x, a),
-                // pass
                 log2(1 / a, x)
             };
+
             for(int i = 0, i_ = sizeof(p) / sizeof(*p); i < i_; ++i){
-                std::cout << (i + 1) << ") " << p[i] << " = " << reduce(p[i]) << std::endl;
+                std::cout << reduce(p[i]) << std::endl;
             }
         }
 
