@@ -35,7 +35,7 @@ int main(){
     // complex
     {
         symbol x("x"), y("y"), z("z"), w("w");
-        std::cout << reduce(log2(z, x + y * I).diff(y, 1)) << std::endl;
+        std::cout << reduce(log2(z, y + x * I).diff(x)) << std::endl;
     }
 
     // logarithm2 test

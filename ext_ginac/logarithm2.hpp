@@ -201,7 +201,7 @@ namespace ExtGiNaC{
 
         protected:
             ex derivative(const symbol &s) const{
-                return logarithm2(x, exp(1)) / y;
+                return (log(y) / log(x)).diff(s);
             }
 
             ex eval_ncmul(const exvector &v) const{
