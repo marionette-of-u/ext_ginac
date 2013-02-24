@@ -23,8 +23,8 @@ public:
     }
 };
 
-
 #include <iostream>
+#include <fstream>
 #include "ext_ginac/ext_ginac.hpp"
 
 int main(){
@@ -32,7 +32,14 @@ int main(){
 
     std::cout << latex;
 
+    // complex
+    {
+        symbol x("x"), y("y"), z("z"), w("w");
+        std::cout << reduce(log2(z, x + y * I).diff(y, 1)) << std::endl;
+    }
+
     // logarithm2 test
+    /*
     {
         std::cout << "-------- logarithm2" << std::endl;
 
@@ -51,8 +58,10 @@ int main(){
         std::cout << e.diff(y) << std::endl;
         std::cout << e.diff(x) << std::endl;
     }
+    */
 
     // reduce test
+    /*
     {
         std::cout << "-------- reduce" << std::endl;
 
@@ -70,7 +79,8 @@ int main(){
                 log2(b, a) * log2(a, x),
                 log2(b, x) / log2(b, a),
                 1 / log2(x, a),
-                log2(1 / a, x)
+                log2(1 / a, x),
+                log2(a, pow(x, log2(a, x)))
             };
 
             for(int i = 0, i_ = sizeof(p) / sizeof(*p); i < i_; ++i){
@@ -80,6 +90,7 @@ int main(){
 
         std::cout << (pow(exp(Pi), I) + 1) << " = " << reduce(pow(exp(Pi), I) + 1) << std::endl;
     }
+    */
 
     return 0;
 }

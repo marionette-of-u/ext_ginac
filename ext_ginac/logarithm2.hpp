@@ -122,7 +122,6 @@ namespace ExtGiNaC{
             }
 
             ex subs(const exmap &m, unsigned options = 0) const{
-                // return logarithm2(x.subs(m, options), y.subs(m, options)).hold();
                 const ex &e_x = x.subs(m, options);
                 const ex &e_y = y.subs(m, options);
                 if(!are_ex_trivially_equal(x, e_x) || !are_ex_trivially_equal(y, e_y)){
@@ -202,7 +201,7 @@ namespace ExtGiNaC{
 
         protected:
             ex derivative(const symbol &s) const{
-                return (log(y) / log(x)).diff(s);
+                return logarithm2(x, exp(1)) / y;
             }
 
             ex eval_ncmul(const exvector &v) const{
